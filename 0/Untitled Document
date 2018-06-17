@@ -43,9 +43,9 @@ int conn(cmd_line *line){
     client->conn_state=CONNECTING;
     //TODO - probably need to init the buffer
     memset(buffer,0, sizeof(buffer));
-    recv(fd,buffer,10,0);
+    ssize_t retrunval=recv(fd,buffer,10,0);
     printf("%s\n",buffer);
-    if(strstr(buffer,"hello")){ //first 5 chars are hello+space ->legal input for this func
+    if(strstr(buffer,"hello ")==0){ //first 5 chars are hello+space ->legal input for this func
         //Set client_id to <client_id>.
         client->client_id=malloc(strlen(buffer+6)); //TODO - free in bye
         strcpy(client->client_id,buffer+6);
@@ -85,7 +85,7 @@ int bye(){
 }
 
 int exec(cmd_line *line){
-    //int flag;
+    int flag;
     //check input
     if(line->arguments[0]==NULL){
         /*perror("there are no arguments to execute!");
@@ -99,17 +99,16 @@ int exec(cmd_line *line){
     if(strcmp(line->arguments[0],"bye")==0)
         return (bye());
     fprintf(stderr,"%s|ERROR unknown message %s\n",client->client_id, line->arguments[0]);
-    return -1;
 }
 
-int main(){
+void main(){
     int cond=1;
     char* input;
     size_t client_state_size= sizeof(client_state); //size of struct client_state for malloc
     client = ( client_state *) (malloc(client_state_size)); //create the client
     init_client(client,"nil");
     while(cond){
-        printf("server: %s >",client->server_addr);
+        printf("server:%s>",client->server_addr);
         input = fgets(buffer, 2048, stdin);//get the current command line
         //if command=="quit" -> no need to create the line
         if(strstr(input,"quit"))
@@ -121,7 +120,7 @@ int main(){
         free_cmd_lines(line);//TODO- need to be in the end of the while iteration
     }
     FREE(client); //TODO - move to correct place
-    return 0;
 }
+
 
 

@@ -41,7 +41,7 @@ static char* _list_dir(DIR * dir, int len) {
 }
 
 
-int file_size(char * filename){
+long file_size(char * filename){
 	long filesize = -1;
 	FILE * file;
 	file = fopen (filename, "r");
@@ -88,4 +88,9 @@ void init_client(client_state *client, char* s_addr){
 	client->server_addr=s_addr; //"nil" for client, name of the machine on which the server is running for server
 	client->client_id=NULL; //NULL if not connected to a server
 	client->sock_fd=-1; //the socket file descriptor is -1.
+}
+
+int exit_func_error(char* msg){
+    perror(msg);
+    return -1;
 }

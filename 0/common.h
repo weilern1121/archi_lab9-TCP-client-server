@@ -20,3 +20,4 @@ typedef struct {
 long file_size(char * filename);
 char* list_dir();
 void init_client(client_state *client, char* s_addr);
+int exit_func_error(char* msg);
